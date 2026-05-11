@@ -1,5 +1,9 @@
 <?php
-require_once __DIR__ . '/config/db.php';
+
+require_once __DIR__ . '/db.php';
+
+$database = new db();
+$pdo = $database->connect();
 
 $stmt = $pdo->query("
     SELECT 
@@ -7,35 +11,12 @@ $stmt = $pdo->query("
         o.name AS org_name,
         e.name AS event_name,
         e.active AS active
-    FROM events AS e
-    JOIN organisations AS o ON e.org_id = o.org_id
+    FROM events e
+    JOIN organisations o ON e.org_id = o.org_id
 ");
 
-$orgs = $stmt->fetchAll();
-?>
+$events = $stmt->fetchAll();
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>DB Test</title>
-</head>
-<body>
-    <h1>Database test</h1>
-
-    <?php if (count($orgs) > 0): ?>
-        <ul>
-            <?php foreach ($orgs as $org): ?>
-                <li>
-                    <?= htmlspecialchars($org['event_id']) ?> -
-                    <?= htmlspecialchars($org['org_name']) ?> -
-                    <?= htmlspecialchars($org['event_name']) ?> -
-                    <?= htmlspecialchars($org['active']) ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    <?php else: ?>
-        <p>No organisations found.</p>
-    <?php endif; ?>
-</body>
-</html>
+echo '<pre>';
+print_r($events);
+echo '</pre>';
